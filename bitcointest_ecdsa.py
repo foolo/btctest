@@ -1,22 +1,8 @@
 import json
 #from bitcoinlib.services.services import Service
-import sqlite3
 import sys
 from typing import TextIO
 from bitcoinlib.scripts import Script
-
-conn = sqlite3.connect("work/example.db")
-cursor = conn.cursor()
-
-cursor.execute("""
-CREATE TABLE IF NOT EXISTS numbers (
-  r_value_hex TEXT NOT NULL,
-  block_number INTEGER NOT NULL,
-  tx_index INTEGER NOT NULL,
-  input_index INTEGER NOT NULL,
-  PRIMARY KEY (r_value_hex)			 -- Ensures logarithmic insertion on `num`
-)
-""")
 
 
 def fetch_content(url: str):
@@ -70,18 +56,7 @@ def handle_block(block_id: int, errlog_file: TextIO) -> list[str]:
 					continue
 				r_value_hex = hex(r_value)[2:]
 
-				# fake r_value_hex
-				#r_value_hex = r_value_hex[0:5]
-
 				print(f'r_value_hex: {r_value_hex}, block_id: {block_id}, tx_index: {tx_index}, input_index: {input_index}')
-				try:
-					with conn:
-						print(f'INSERT INTO numbers VALUES ({r_value_hex}, {block_id}, {tx_index}, {input_index})')
-						cursor.execute("INSERT INTO numbers VALUES (?, ?, ?, ?)", (r_value_hex, block_id, tx_index, input_index))
-				except sqlite3.IntegrityError:
-					errlog_file.write(f'IntegrityError: {r_value_hex}\t{block_id}\t{tx_index}\t{input_index}\n')
-					errlog_file.flush()
-					continue
 
 				new_lines.append(f'{r_value_hex}\t{block_id}\t{tx_index}\t{input_index}\n')
 		return new_lines
