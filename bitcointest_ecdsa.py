@@ -5,7 +5,7 @@ import sys
 from typing import TextIO
 from bitcoinlib.scripts import Script
 
-conn = sqlite3.connect("example.db")
+conn = sqlite3.connect("work/example.db")
 cursor = conn.cursor()
 
 cursor.execute("""
@@ -87,8 +87,8 @@ def handle_block(block_id: int, errlog_file: TextIO) -> list[str]:
 		return new_lines
 
 
-NEXT_BLOCK_FILE = 'next_block.txt'
-R_ARCHIVE_FILE = 'r_archive.txt'
+NEXT_BLOCK_FILE = 'work/next_block.txt'
+R_ARCHIVE_FILE = 'work/r_archive.txt'
 
 def run2():
 
@@ -102,7 +102,7 @@ def run2():
 	
 
 	# open a text file for err logs
-	with open('err_log.txt', 'w') as errlog_file:
+	with open('work/err_log.txt', 'w') as errlog_file:
 		with open(R_ARCHIVE_FILE, 'a') as archive_file:
 			while True:
 				new_lines = handle_block(next_block, errlog_file)

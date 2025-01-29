@@ -6,6 +6,7 @@ from typing import TextIO
 from bitcoinlib.scripts import Script
 import subprocess
 
+## pip install bitcoinlib
 
 def get_r_value(sig: str) -> int:
 	script = Script.parse(sig)
