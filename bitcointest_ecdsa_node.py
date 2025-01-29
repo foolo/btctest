@@ -68,8 +68,8 @@ def handle_block(block_id: int, errlog_file: TextIO) -> list[str]:
 		return new_lines
 
 
-NODE_NEXT_BLOCK_FILE = 'node_next_block.txt'
-NODE_R_ARCHIVE_FILE = 'node_r_archive.txt'
+NODE_NEXT_BLOCK_FILE = 'work/node_next_block.txt'
+NODE_R_ARCHIVE_FILE = 'work/node_r_archive.txt'
 
 def run2():
 	try:
@@ -82,7 +82,7 @@ def run2():
 	
 
 	# open a text file for err logs
-	with open('err_log.txt', 'w') as errlog_file:
+	with open('work/node_err_log.txt', 'w') as errlog_file:
 		with open(NODE_R_ARCHIVE_FILE, 'a') as archive_file:
 			while True:
 				new_lines = handle_block(next_block, errlog_file)
