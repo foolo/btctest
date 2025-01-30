@@ -87,7 +87,7 @@ def run2():
 			next_block = int(next_block_file.read())
 			print(f'next_block: {next_block}')
 	except FileNotFoundError:
-		next_block = 223300
+		next_block = 0
 
 	# open a text file for err logs
 	with open(NODE_ERR_LOG_FILE, 'w') as errlog_file:

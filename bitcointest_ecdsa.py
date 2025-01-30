@@ -74,7 +74,7 @@ def run2():
 			next_block = int(next_block_file.read())
 			print(f'next_block: {next_block}')
 	except FileNotFoundError:
-		next_block = 223300
+		next_block = 0
 
 	with open(ERR_LOG_FILE, 'w') as errlog_file:
 		with open(R_ARCHIVE_FILE, 'a') as archive_file:
