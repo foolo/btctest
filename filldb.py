@@ -3,9 +3,8 @@ import sqlite3
 conn = sqlite3.connect("example.db")
 cursor = conn.cursor()
 
-
-
 R_ARCHIVE_FILE = 'r_archive.txt'
+
 
 def run2():
 	with open(R_ARCHIVE_FILE, 'r') as archive_file:
@@ -26,7 +25,6 @@ def run2():
 			print(f'r_value_hex: {r_value_hex}, block_id: {block_id}, tx_index: {tx_index}, input_index: {input_index}')
 			cursor.execute("INSERT INTO numbers VALUES (?, ?, ?, ?)", (r_value_hex, block_id, tx_index, input_index))
 		conn.commit()
-
 
 
 if __name__ == '__main__':

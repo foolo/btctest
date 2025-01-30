@@ -4,6 +4,7 @@ R_ARCHIVE_FILE = 'work/r_archive.txt'
 TMP_FILE = '/tmp/r_archive_tmp.txt'
 R_ARCHIVE_FILE_SORTED = '/tmp/r_archive_sorted.txt'
 
+
 def find_duplicates():
 
 	subprocess.run(['cp', R_ARCHIVE_FILE, TMP_FILE])
