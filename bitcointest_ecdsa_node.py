@@ -1,5 +1,7 @@
+import argparse
 import json
 #from bitcoinlib.services.services import Service
+import os
 import sqlite3
 import sys
 from typing import TextIO
@@ -70,11 +72,16 @@ def handle_block(block_id: int, errlog_file: TextIO) -> list[str]:
 	return new_lines
 
 
-NODE_NEXT_BLOCK_FILE = 'work/node_next_block.txt'
-NODE_R_ARCHIVE_FILE = 'work/node_r_archive.txt'
-
-
 def run2():
+	parser = argparse.ArgumentParser()
+	parser.add_argument('work_dir', help='work directory')
+	args = parser.parse_args()
+	work_dir = args.work_dir
+
+	NODE_NEXT_BLOCK_FILE = os.path.join(work_dir, 'node_next_block.txt')
+	NODE_R_ARCHIVE_FILE = os.path.join(work_dir, 'node_r_archive.txt')
+	NODE_ERR_LOG_FILE = os.path.join(work_dir, 'node_err_log.txt')
+
 	try:
 		with open(NODE_NEXT_BLOCK_FILE, 'r') as next_block_file:
 			next_block = int(next_block_file.read())
@@ -83,7 +90,7 @@ def run2():
 		next_block = 223300
 
 	# open a text file for err logs
-	with open('work/node_err_log.txt', 'w') as errlog_file:
+	with open(NODE_ERR_LOG_FILE, 'w') as errlog_file:
 		with open(NODE_R_ARCHIVE_FILE, 'a') as archive_file:
 			while True:
 				new_lines = handle_block(next_block, errlog_file)
