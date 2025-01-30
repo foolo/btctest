@@ -1,12 +1,15 @@
 import argparse
 import json
 #from bitcoinlib.services.services import Service
+import logging
 import os
 import sqlite3
 import sys
 from typing import TextIO
 from bitcoinlib.scripts import Script
 import subprocess
+
+from log_config import initialize_logger
 
 ## pip install bitcoinlib
 
@@ -28,7 +31,7 @@ def runCommandAndGetOutput(command: list[str]) -> str:
 	return output.stdout
 
 
-def handle_block(block_id: int, errlog_file: TextIO) -> list[str]:
+def handle_block(block_id: int, logger: logging.Logger) -> list[str]:
 	print(f'\rblock_id: {block_id}', end='\t', flush=True)
 	block_hash = runCommandAndGetOutput(['bitcoin-cli', 'getblockhash', str(block_id)]).strip()
 	block = runCommandAndGetOutput(['bitcoin-cli', 'getblock', block_hash])
@@ -49,9 +52,7 @@ def handle_block(block_id: int, errlog_file: TextIO) -> list[str]:
 				r_value = get_r_value(signatures)
 			except Exception as e:
 				error_msg = f'block_id: {block_id}, tx_index: {tx_index}, input_index: {input_index}, {e}'
-				print(f'ERROR: {error_msg}')
-				errlog_file.write(f'{error_msg}\n')
-				errlog_file.flush()
+				logger.error(f'{error_msg}\n')
 				continue
 			r_value_hex = hex(r_value)[2:]
 
@@ -82,6 +83,9 @@ def run2():
 	NODE_R_ARCHIVE_FILE = os.path.join(work_dir, 'node_r_archive.txt')
 	NODE_ERR_LOG_FILE = os.path.join(work_dir, 'node_err_log.txt')
 
+	logger = initialize_logger(NODE_ERR_LOG_FILE)
+	logger.info('app started')
+
 	try:
 		with open(NODE_NEXT_BLOCK_FILE, 'r') as next_block_file:
 			next_block = int(next_block_file.read())
@@ -89,17 +93,14 @@ def run2():
 	except FileNotFoundError:
 		next_block = 0
 
-	# open a text file for err logs
-	with open(NODE_ERR_LOG_FILE, 'w') as errlog_file:
-		with open(NODE_R_ARCHIVE_FILE, 'a') as archive_file:
-			while True:
-				new_lines = handle_block(next_block, errlog_file)
-				errlog_file.flush()
-				archive_file.writelines(new_lines)
-				archive_file.flush()
-				next_block += 1
-				with open(NODE_NEXT_BLOCK_FILE, 'w') as next_block_file:
-					next_block_file.write(str(next_block))
+	with open(NODE_R_ARCHIVE_FILE, 'a') as archive_file:
+		while True:
+			new_lines = handle_block(next_block, logger)
+			archive_file.writelines(new_lines)
+			archive_file.flush()
+			next_block += 1
+			with open(NODE_NEXT_BLOCK_FILE, 'w') as next_block_file:
+				next_block_file.write(str(next_block))
 
 
 if __name__ == '__main__':
