@@ -1,17 +1,14 @@
-import subprocess
-
-R_ARCHIVE_FILE = 'work/r_archive.txt'
-TMP_FILE = '/tmp/r_archive_tmp.txt'
-R_ARCHIVE_FILE_SORTED = '/tmp/r_archive_sorted.txt'
+import argparse
 
 
 def find_duplicates():
-
-	subprocess.run(['cp', R_ARCHIVE_FILE, TMP_FILE])
-	subprocess.run(['sort', '--output', R_ARCHIVE_FILE_SORTED, TMP_FILE])
+	parser = argparse.ArgumentParser()
+	parser.add_argument('archive_file_sorted', type=str)
+	args = parser.parse_args()
+	r_archive_file_sorted = args.archive_file_sorted
 
 	line_count = 0
-	with open(R_ARCHIVE_FILE_SORTED, 'r') as archive_file:
+	with open(r_archive_file_sorted, 'r') as archive_file:
 		previous_r_value_hex = ""
 		for line in archive_file:
 			parts = line.strip().split('\t')
