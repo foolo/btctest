@@ -6,17 +6,9 @@ from bitcoinlib.scripts import Script
 import subprocess
 
 from log_config import initialize_logger
+from utils import get_r_values_from_script
 
 ## pip install bitcoinlib
-
-
-def get_r_value(sig: str) -> int:
-	script = Script.parse(sig)
-	signatures = script.signatures
-	if len(signatures) != 1:
-		raise ValueError(f'len(signatures) != 1: {signatures}')
-	signature = signatures[0]
-	return signature.r
 
 
 def runCommandAndGetOutput(command: list[str]) -> str:
@@ -45,14 +37,15 @@ def handle_block(block_id: int, logger: logging.Logger) -> list[str]:
 		for input_index, input in enumerate(inputs):
 			signatures = input["scriptSig"]["hex"]
 			try:
-				r_value = get_r_value(signatures)
+				r_values = get_r_values_from_script(signatures)
+				for r_value in r_values:
+					r_value_hex = hex(r_value)[2:]
+					print(f'r_value_hex: {r_value_hex}, block_id: {block_id}, tx_index: {tx_index}, input_index: {input_index}')
+					new_lines.append(f'{r_value_hex}\t{block_id}\t{tx_index}\t{input_index}\n')
 			except Exception as e:
 				error_msg = f'block_id: {block_id}, tx_index: {tx_index}, input_index: {input_index}, {e}'
 				logger.error(f'{error_msg}\n')
 				continue
-			r_value_hex = hex(r_value)[2:]
-			print(f'r_value_hex: {r_value_hex}, block_id: {block_id}, tx_index: {tx_index}, input_index: {input_index}')
-			new_lines.append(f'{r_value_hex}\t{block_id}\t{tx_index}\t{input_index}\n')
 	return new_lines
 
 
