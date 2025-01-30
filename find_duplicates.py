@@ -1,4 +1,5 @@
 import argparse
+import sys
 
 
 def find_duplicates():
@@ -25,7 +26,7 @@ def find_duplicates():
 			r_value_stack.append(line)
 			current_r_value_hex = r_value_hex
 			line_count += 1
-	print(f'parsed {line_count} lines')
+	print(f'parsed {line_count} lines', file=sys.stderr)
 
 
 if __name__ == '__main__':
