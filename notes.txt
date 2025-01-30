@@ -1,0 +1,17 @@
+## Example Python code to calculate k and recover the private key:
+
+from sympy import mod_inverse
+
+# Parameters
+n = 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEBAAEDCE6AF48A03BBFD25E8CD0364141  # Curve order
+H1 = int("hash_of_message_1", 16)  # Replace with actual hash
+H2 = int("hash_of_message_2", 16)  # Replace with actual hash
+s1, s2 = signature1, signature2    # Replace with actual signatures
+r = shared_r_value                 # Replace with shared r
+
+# Calculate k
+k = ((H1 - H2) * mod_inverse(s1 - s2, n)) % n
+
+# Recover private key
+private_key = ((s1 * k - H1) * mod_inverse(r, n)) % n
+print(f"Recovered private key: {private_key}")
