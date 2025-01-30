@@ -1,6 +1,5 @@
 import argparse
 import json
-#from bitcoinlib.services.services import Service
 import os
 import sys
 from typing import TextIO
@@ -10,14 +9,8 @@ from bitcoinlib.scripts import Script
 def fetch_content(url: str):
 	import requests
 	response = requests.get(url)
-	#return response.content
 	str = response.text
 	return str
-
-
-# Specify the block height
-# start_block = 223302
-# block_count = 1
 
 
 def get_r_value(sig: str) -> int:
@@ -83,7 +76,6 @@ def run2():
 	except FileNotFoundError:
 		next_block = 223300
 
-	# open a text file for err logs
 	with open(ERR_LOG_FILE, 'w') as errlog_file:
 		with open(R_ARCHIVE_FILE, 'a') as archive_file:
 			while True:
@@ -94,36 +86,6 @@ def run2():
 				next_block += 1
 				with open(NEXT_BLOCK_FILE, 'w') as next_block_file:
 					next_block_file.write(str(next_block))
-
-
-def run():
-
-	# Initialize a Bitcoinlib Service (using default Bitcoin node or public APIs)
-	service = Service()
-
-	for block_id in range(start_block, start_block + block_count):
-		block = service.getblock(block_id)
-		if not block:
-			raise ValueError(f'block {block_id} not found')
-		print(f'block: {block}')
-		txns = block.transactions
-		if txns is None:
-			print(f'WARNING: txns is None for block {block_id}')
-			continue
-		#signatures: list[tuple[int, int, int, int]] = []
-		for txn_index, txn in enumerate(txns[1:]):
-			print(f'txn: {txn}')
-			for input_index, input in enumerate(txn.inputs):
-				print(f'input: {input}')
-				sigs = input.script.signatures
-				for sig in sigs:
-					print(f'sig: {repr(sig)}')
-					r_value = hex(sig.r)[2:]
-					signature = (r_value, block_id, txn_index, input_index)
-					#signatures.append(signature)
-					cursor.execute("INSERT INTO numbers VALUES (?, ?, ?, ?)", signature)
-
-		#cursor.executemany("INSERT INTO numbers VALUES (?, ?, ?, ?)", signatures)
 
 
 if __name__ == '__main__':
