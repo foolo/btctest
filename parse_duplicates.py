@@ -68,8 +68,7 @@ def parse_duplicates():
 			signature_hash_int = int(signature_hash, 16)
 			sign_info: dict[str, Any] = {'signature_hash': signature_hash, 'r': r, 's': s}
 			sign_infos[r_value_hex] = sign_info
-			print(f'{signature_hash_int}\t{r}\t{s})', file=sys.stderr)
-		print(json.dumps(sign_infos, indent=2))
+			print(f'{r}\t{s}\t{signature_hash_int}\t{tx_hash}')
 
 
 if __name__ == '__main__':
