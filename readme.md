@@ -8,7 +8,7 @@ Will output $WORK_DIR/r_archive.txt
 
 ### Sort
 
-    sort $WORK_DIR/r_archive.txt > $WORK_DIR/r_archive_sorted.txt
+    sort --unique $WORK_DIR/r_archive.txt > $WORK_DIR/r_archive_sorted.txt
 
 ### Find duplicate r values
 
