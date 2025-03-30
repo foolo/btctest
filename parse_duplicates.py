@@ -24,8 +24,7 @@ def get_signature_and_tx_hash(block_id: int, tx_index: int, input_index: int) ->
 	script = Script.parse(script)
 	signatures = script.signatures
 	if len(signatures) != 1:
-		print(f'len(signatures) != 1: {len(signatures)}')
-		sys.exit(1)
+		raise ValueError(f'len(signatures) != 1: {len(signatures)}')
 	return signatures[0].r, signatures[0].s, tx_hash
 
 
@@ -55,7 +54,11 @@ def parse_duplicates():
 			block_id = int(parts[1])
 			tx_index = int(parts[2])
 			input_index = int(parts[3])
-			r, s, tx_hash = get_signature_and_tx_hash(block_id, tx_index, input_index)
+			try:
+				r, s, tx_hash = get_signature_and_tx_hash(block_id, tx_index, input_index)
+			except Exception as e:
+				print(f'ERROR: {e}, skipping {r_value_hex}, {block_id}, {tx_index}, {input_index}', file=sys.stderr)
+				continue
 			r_ref_hex = hex(r)[2:]
 			if r_ref_hex != r_value_hex:
 				print(f'r != r_value_hex: {r_ref_hex} != {r_value_hex}')
