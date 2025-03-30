@@ -5,6 +5,7 @@ import sys
 from typing import Any
 from bitcoinlib.scripts import Script
 from bitcoinlib.transactions import Transaction
+from tqdm import tqdm
 
 
 def fetch_content(url: str):
@@ -45,7 +46,10 @@ def parse_duplicates():
 
 	with open(duplicates, 'r') as archive_file:
 		sign_infos: dict[str, dict[str, Any]] = {}
-		for line in archive_file:
+		lines = archive_file.readlines()
+		line_count = len(lines)
+		print(f'parsed {line_count} lines', file=sys.stderr)
+		for line in tqdm(lines):
 			line = line.strip()
 			parts = line.split('\t')
 			if len(parts) != 4:
