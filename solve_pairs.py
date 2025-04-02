@@ -20,7 +20,9 @@ def solve_pair(sig_info1: SignatureInfo, sig_info2: SignatureInfo):
 	h1 = sig_info1.signature_hash_int
 	h2 = sig_info2.signature_hash_int
 
-	n = 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEBAAEDCE6AF48A03BBFD25E8CD0364141  # Curve order
+	# Curve order for Secp256k1, https://en.bitcoin.it/wiki/Secp256k1
+	n = 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEBAAEDCE6AF48A03BBFD25E8CD0364141
+
 	k = ((h1 - h2) * mod_inverse(s1 - s2, n)) % n
 
 	# not yet verified, seems to be incorrect
