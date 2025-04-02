@@ -16,4 +16,4 @@ Will output $WORK_DIR/r_archive.txt
 
 ### Collect data from third party API for each duplicate r value
 
-    python3 parse_duplicates.py $WORK_DIR/duplicate_r_values.txt > $WORK_DIR/parsed_duplicates.json
+    python3 parse_duplicates.py $WORK_DIR/duplicate_r_values.txt > $WORK_DIR/parsed_duplicates.txt
