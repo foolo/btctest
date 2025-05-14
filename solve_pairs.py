@@ -11,6 +11,7 @@ class SignatureInfo:
 	s: int
 	signature_hash_int: int
 	tx_hash: str
+	input_index: int
 
 
 def solve_pair(sig_info1: SignatureInfo, sig_info2: SignatureInfo):
@@ -28,7 +29,7 @@ def solve_pair(sig_info1: SignatureInfo, sig_info2: SignatureInfo):
 	# not yet verified, seems to be incorrect
 	private_key = ((s1 * k - h1) * mod_inverse(r, n)) % n
 	print(f"Recovered private key: {private_key}, txn hash: {sig_info1.tx_hash}, {sig_info2.tx_hash}", file=sys.stderr)
-	print(f"{private_key}\t{sig_info1.tx_hash}\t{sig_info2.tx_hash}")
+	print(f"{private_key}\t{sig_info1.tx_hash}\t{sig_info1.input_index}\t{sig_info2.tx_hash}\t{sig_info2.input_index}")
 
 
 def solve_pairs():
@@ -46,13 +47,14 @@ def solve_pairs():
 		for line in tqdm(lines):
 			line = line.strip()
 			parts = line.split('\t')
-			if len(parts) != 4:
-				raise ValueError(f'len(parts) != 4: {parts}')
+			if len(parts) != 5:
+				raise ValueError(f'len(parts) != 5: {parts}')
 			r_int = int(parts[0])
 			s_int = int(parts[1])
 			signature_hash_int = int(parts[2])
 			tx_hash = parts[3]
-			signature_info = SignatureInfo(r_int, s_int, signature_hash_int, tx_hash)
+			input_index = int(parts[4])
+			signature_info = SignatureInfo(r_int, s_int, signature_hash_int, tx_hash, input_index)
 			if r_int not in r_to_signature_hash:
 				r_to_signature_hash[r_int] = []
 			r_to_signature_hash[r_int].append(signature_info)

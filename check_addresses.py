@@ -6,20 +6,14 @@ from tqdm import tqdm
 from utils import fetch_content
 
 
-def get_btc_address_for_tx_hash(tx_hash: str) -> str | None:
+def get_btc_address_for_tx_hash(tx_hash: str, input_index: int) -> str | None:
 	json_url = f"https://blockchain.info/rawtx/{tx_hash}"
 	json_content = fetch_content(json_url)
 	json_obj = json.loads(json_content)
 	inputs = json_obj["inputs"]
 	if len(inputs) < 1:
 		raise ValueError(f'len(inputs) < 1')
-	address0 = inputs[0]["prev_out"]["addr"]
-	for i in range(1, len(inputs)):
-		addr = inputs[i]["prev_out"]["addr"]
-		if addr != address0:
-			print(f'WARNING: multiple addresses found for tx_hash {tx_hash}: {address0} and {addr}', file=sys.stderr)
-			return None
-	return address0
+	return inputs[input_index]["prev_out"]["addr"]
 
 
 def get_all_balances(addresses: list[str]) -> dict[str, int]:
@@ -51,10 +45,13 @@ def check_addresses():
 			parts = line.split('\t')
 			#private_key = int(parts[0])
 			tx_hash1 = parts[1]
-			tx_hash2 = parts[2]
+			input_index1 = int(parts[2])
+			tx_hash2 = parts[3]
+			input_index2 = int(parts[4])
 
-			address1 = get_btc_address_for_tx_hash(tx_hash1)
-			address2 = get_btc_address_for_tx_hash(tx_hash2)
+			address1 = get_btc_address_for_tx_hash(tx_hash1, input_index1)
+			address2 = get_btc_address_for_tx_hash(tx_hash2, input_index2)
+
 			if address1 and not address1 in all_addresses:
 				all_addresses.add(address1)
 			if address2 and not address2 in all_addresses:

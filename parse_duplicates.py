@@ -70,7 +70,7 @@ def parse_duplicates():
 			signature_hash_int = int(signature_hash, 16)
 			sign_info: dict[str, Any] = {'signature_hash': signature_hash, 'r': r, 's': s}
 			sign_infos[r_value_hex] = sign_info
-			print(f'{r}\t{s}\t{signature_hash_int}\t{tx_hash}')
+			print(f'{r}\t{s}\t{signature_hash_int}\t{tx_hash}\t{input_index}')
 
 
 if __name__ == '__main__':
