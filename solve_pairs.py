@@ -27,7 +27,8 @@ def solve_pair(sig_info1: SignatureInfo, sig_info2: SignatureInfo):
 
 	# not yet verified, seems to be incorrect
 	private_key = ((s1 * k - h1) * mod_inverse(r, n)) % n
-	print(f"Recovered private key: {private_key}, txn hash: {sig_info1.tx_hash}, {sig_info2.tx_hash}")
+	print(f"Recovered private key: {private_key}, txn hash: {sig_info1.tx_hash}, {sig_info2.tx_hash}", file=sys.stderr)
+	print(f"{private_key}\t{sig_info1.tx_hash}\t{sig_info2.tx_hash}")
 
 
 def solve_pairs():
@@ -60,16 +61,16 @@ def solve_pairs():
 
 	for r_int, signature_infos in r_to_signature_hash.items():
 		if len(signature_infos) > 1:
-			print(f'found {len(signature_infos)} signatures with r_int {r_int}')
+			print(f'found {len(signature_infos)} signatures with r_int {r_int}', file=sys.stderr)
 			for i in range(len(signature_infos)):
 				for j in range(i + 1, len(signature_infos)):
 					sig_info_i = signature_infos[i]
 					sig_info_j = signature_infos[j]
 					if sig_info_i.s == sig_info_j.s:
-						print(f'skip same s: {sig_info_i.s}')
+						print(f'skip same s: {sig_info_i.s}', file=sys.stderr)
 						continue
 					if sig_info_i.signature_hash_int == sig_info_j.signature_hash_int:
-						print(f'skip same signature_hash_int: {sig_info_i.signature_hash_int}')
+						print(f'skip same signature_hash_int: {sig_info_i.signature_hash_int}', file=sys.stderr)
 						continue
 					solve_pair(sig_info_i, sig_info_j)
 
