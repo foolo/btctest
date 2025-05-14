@@ -38,12 +38,12 @@ def check_addresses():
 	with open(args.keys_and_transactions, 'r') as f:
 		lines = f.readlines()
 
-		all_addresses: set[str] = set()
+		all_addresses: dict[str, int] = {}
 
 		for line in tqdm(lines):
 			line = line.strip()
 			parts = line.split('\t')
-			#private_key = int(parts[0])
+			private_key = int(parts[0])
 			tx_hash1 = parts[1]
 			input_index1 = int(parts[2])
 			tx_hash2 = parts[3]
@@ -51,16 +51,19 @@ def check_addresses():
 
 			address1 = get_btc_address_for_tx_hash(tx_hash1, input_index1)
 			address2 = get_btc_address_for_tx_hash(tx_hash2, input_index2)
+			if address1 != address2:
+				print(f'WARNING: address1 != address2: {address1}')
 
 			if address1 and not address1 in all_addresses:
-				all_addresses.add(address1)
+				all_addresses[address1] = private_key
 			if address2 and not address2 in all_addresses:
-				all_addresses.add(address2)
+				all_addresses[address2] = private_key
 
-		all_addresses_list = list(all_addresses)
+		all_addresses_list = list(all_addresses.keys())
 		balances = get_all_balances(all_addresses_list)
-		for address, balance in balances.items():
-			print(f'address {address}, balance: {balance}', file=sys.stderr)
+		for address in all_addresses_list:
+			balance = balances[address]
+			print(f'address: {address}, balance: {balance}, private_key: {all_addresses[address]}')
 
 
 if __name__ == '__main__':
