@@ -7,12 +7,7 @@ from bitcoinlib.scripts import Script
 from bitcoinlib.transactions import Transaction
 from tqdm import tqdm
 
-
-def fetch_content(url: str):
-	import requests
-	response = requests.get(url)
-	str = response.text
-	return str
+from utils import fetch_content
 
 
 def get_signature_and_tx_hash(block_id: int, tx_index: int, input_index: int) -> tuple[int, int, str]:
