@@ -42,9 +42,9 @@ def parse_duplicates():
 	parser = argparse.ArgumentParser()
 	parser.add_argument('duplicates', type=str)
 	args = parser.parse_args()
-	duplicates = args.duplicates
+	assert isinstance(args.duplicates, str)
 
-	with open(duplicates, 'r') as archive_file:
+	with open(args.duplicates, 'r') as archive_file:
 		sign_infos: dict[str, dict[str, Any]] = {}
 		lines = archive_file.readlines()
 		line_count = len(lines)

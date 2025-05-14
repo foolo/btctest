@@ -6,10 +6,10 @@ def find_duplicates():
 	parser = argparse.ArgumentParser()
 	parser.add_argument('archive_file_sorted', type=str)
 	args = parser.parse_args()
-	r_archive_file_sorted = args.archive_file_sorted
+	assert isinstance(args.archive_file_sorted, str)
 
 	line_count = 0
-	with open(r_archive_file_sorted, 'r') as archive_file:
+	with open(args.archive_file_sorted, 'r') as archive_file:
 		current_r_value_hex = ""
 		r_value_stack: list[str] = []
 		for line in archive_file:

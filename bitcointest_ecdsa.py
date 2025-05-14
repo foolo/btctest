@@ -53,11 +53,11 @@ def run2():
 	parser = argparse.ArgumentParser()
 	parser.add_argument('work_dir', help='work directory')
 	args = parser.parse_args()
-	work_dir = args.work_dir
+	assert isinstance(args.work_dir, str)
 
-	NEXT_BLOCK_FILE = os.path.join(work_dir, 'next_block.txt')
-	R_ARCHIVE_FILE = os.path.join(work_dir, 'r_archive.txt')
-	ERR_LOG_FILE = os.path.join(work_dir, 'err_log.txt')
+	NEXT_BLOCK_FILE = os.path.join(args.work_dir, 'next_block.txt')
+	R_ARCHIVE_FILE = os.path.join(args.work_dir, 'r_archive.txt')
+	ERR_LOG_FILE = os.path.join(args.work_dir, 'err_log.txt')
 
 	logger = initialize_logger(ERR_LOG_FILE)
 	logger.info('app started')

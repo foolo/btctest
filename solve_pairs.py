@@ -35,11 +35,11 @@ def solve_pairs():
 	parser = argparse.ArgumentParser()
 	parser.add_argument('value_sets', type=str)
 	args = parser.parse_args()
-	value_sets = args.value_sets
+	assert isinstance(args.value_sets, str)
 
 	r_to_signature_hash: dict[int, list[SignatureInfo]] = {}
 
-	with open(value_sets, 'r') as f:
+	with open(args.value_sets, 'r') as f:
 		lines = f.readlines()
 		line_count = len(lines)
 		print(f'parsed {line_count} lines', file=sys.stderr)
