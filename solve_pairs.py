@@ -49,7 +49,7 @@ def solve_pairs():
 				raise ValueError(f'len(parts) != 4: {parts}')
 			r_int = int(parts[0])
 			s_int = int(parts[1])
-			signature_hash_int = int(parts[2], 16)
+			signature_hash_int = int(parts[2])
 			tx_hash = parts[3]
 			signature_info = SignatureInfo(r_int, s_int, signature_hash_int, tx_hash)
 			if r_int not in r_to_signature_hash:
