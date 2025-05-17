@@ -1,22 +1,13 @@
 import argparse
 import json
 import sys
+from typing import Any
 from tqdm import tqdm
 
 from utils import fetch_content
 
 
-def get_btc_address_for_tx_hash(tx_hash: str, input_index: int) -> str | None:
-	json_url = f"https://blockchain.info/rawtx/{tx_hash}"
-	json_content = fetch_content(json_url)
-	json_obj = json.loads(json_content)
-	inputs = json_obj["inputs"]
-	if len(inputs) < 1:
-		raise ValueError(f'len(inputs) < 1')
-	return inputs[input_index]["prev_out"]["addr"]
-
-
-def get_all_balances(addresses: list[str]) -> dict[str, int]:
+def get_balances(addresses: list[str]) -> dict[str, int]:
 	balances: dict[str, int] = {}
 	json_url = f"https://blockchain.info/balance?active={'|'.join(addresses)}"
 	json_content = fetch_content(json_url)
@@ -38,32 +29,16 @@ def check_addresses():
 	with open(args.keys_and_transactions, 'r') as f:
 		lines = f.readlines()
 
-		all_addresses: dict[str, int] = {}
-
-		for line in tqdm(lines):
+		addresses: list[tuple[str, int]] = []
+		all_balances: dict[str, int] = {}
+		for line in lines:
+			print('------')
 			line = line.strip()
 			parts = line.split('\t')
-			private_key = int(parts[0])
-			tx_hash1 = parts[1]
-			input_index1 = int(parts[2])
-			tx_hash2 = parts[3]
-			input_index2 = int(parts[4])
+			address = parts[0]
+			private_key = int(parts[1])
 
-			address1 = get_btc_address_for_tx_hash(tx_hash1, input_index1)
-			address2 = get_btc_address_for_tx_hash(tx_hash2, input_index2)
-			if address1 != address2:
-				print(f'WARNING: address1 != address2: {address1}')
-
-			if address1 and not address1 in all_addresses:
-				all_addresses[address1] = private_key
-			if address2 and not address2 in all_addresses:
-				all_addresses[address2] = private_key
-
-		all_addresses_list = list(all_addresses.keys())
-		balances = get_all_balances(all_addresses_list)
-		for address in all_addresses_list:
-			balance = balances[address]
-			print(f'address: {address}, balance: {balance}, private_key: {all_addresses[address]}')
+		# todo, check balances
 
 
 if __name__ == '__main__':
