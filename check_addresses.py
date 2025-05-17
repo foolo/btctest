@@ -29,16 +29,32 @@ def check_addresses():
 	with open(args.keys_and_transactions, 'r') as f:
 		lines = f.readlines()
 
-		addresses: list[tuple[str, int]] = []
-		all_balances: dict[str, int] = {}
+		addresses_stack: list[str] = []
+		pkeys: dict[str, int] = {}
+		balances: dict[str, int] = {}
 		for line in lines:
-			print('------')
 			line = line.strip()
 			parts = line.split('\t')
 			address = parts[0]
 			private_key = int(parts[1])
+			pkeys[address] = private_key
+			addresses_stack.append(address)
 
-		# todo, check balances
+		while len(addresses_stack) > 0:
+			chunk_size = 100
+			addresses_chunk = addresses_stack[:chunk_size]
+			addresses_stack = addresses_stack[chunk_size:]
+			print(f'fetching {len(addresses_chunk)} addresses')
+			balances_chunk = get_balances(addresses_chunk)
+			for address in addresses_chunk:
+				balances[address] = balances_chunk[address]
+
+		for address, pk in pkeys.items():
+			if address not in balances:
+				print(f'WARNING: address {address} not found')
+				continue
+			balance = balances[address]
+			print(f'{address}\t{pk}\t{balance}')
 
 
 if __name__ == '__main__':

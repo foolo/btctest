@@ -138,10 +138,10 @@ def check_results(results: dict[int, tuple[SignatureInfo, SignatureInfo]]):
 		addr_ref_compressed = private_key_to_address(private_key, compressed=True)
 		if address1 != addr_ref_uncompressed and address1 != addr_ref_compressed:
 			print(f'WARNING: address1 != addr_ref: {address1} != {addr_ref_uncompressed} or {addr_ref_compressed}', file=sys.stderr)
-			continue
+			#continue
 		if address2 != addr_ref_uncompressed and address2 != addr_ref_compressed:
 			print(f'WARNING: address2 != addr_ref: {address2} != {addr_ref_uncompressed} or {addr_ref_compressed}', file=sys.stderr)
-			continue
+			#continue
 
 		if address1 != address2:
 			print(f'WARNING: address1 != address2: {address1} != {address2}', file=sys.stderr)
@@ -150,9 +150,6 @@ def check_results(results: dict[int, tuple[SignatureInfo, SignatureInfo]]):
 			all_addresses[address1] = private_key
 		if address2 and not address2 in all_addresses:
 			all_addresses[address2] = private_key
-
-		if len(all_addresses) > 10:
-			break
 
 	for address, private_key in all_addresses.items():
 		print(f'{address}\t{private_key}')
