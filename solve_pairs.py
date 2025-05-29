@@ -115,9 +115,14 @@ def get_all_balances(addresses: list[str]) -> dict[str, int]:
 from bitcoinlib.keys import Key
 
 
-def private_key_to_address(private_key: int, compressed: bool) -> str:
+def private_key_to_address(private_key: int, compressed: bool, encoding: str = 'base58') -> str:
 	key = Key(import_key=private_key)
-	return key.address(compressed=compressed)
+	return key.address(compressed=compressed, encoding=encoding)
+
+
+def private_key_to_wif(private_key: int) -> str:
+	key = Key(import_key=private_key)
+	return key.wif()
 
 
 def check_results(results: dict[int, tuple[SignatureInfo, SignatureInfo]]):
@@ -153,7 +158,9 @@ def check_results(results: dict[int, tuple[SignatureInfo, SignatureInfo]]):
 			all_addresses[address2] = private_key
 
 	for address, private_key in all_addresses.items():
-		print(f'{address}\t{private_key}')
+		bech32_address = private_key_to_address(private_key, compressed=True, encoding='bech32')
+		private_key_wif = private_key_to_wif(private_key)
+		print(f'{address}\t{private_key}\t{bech32_address}\t{private_key_wif}')
 
 
 if __name__ == '__main__':
